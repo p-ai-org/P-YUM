@@ -40,6 +40,7 @@ def main(argv):
         raise SyntaxError("Cannot read video file")
     
     os.system("python cut_frequency.py " + video_path_or_link) 
+    os.system("python food_host_screen_time.py " + video_path_or_link)
 
     
 

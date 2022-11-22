@@ -81,6 +81,7 @@ def main(argv):
     fig.set_figheight(7)
     plt.xticks(rotation=30)
 
+    # creating graph
     plt.bar(time_intervals, seconds_cluster)
 
     plt.ylabel("Number of cuts")

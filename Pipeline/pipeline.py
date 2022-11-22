@@ -16,6 +16,8 @@ def main(argv):
     if len(sys.argv) == 1:
         print("Please input full YouTube video link or local video path")
         print("Use quotes around video link or path")
+        raise SyntaxError("Missing video argument")
+
     # more than one argument
     elif not len(sys.argv) == 2:
         raise SyntaxError("Too many arguments")

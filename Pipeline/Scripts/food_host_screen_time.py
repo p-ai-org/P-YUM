@@ -7,6 +7,7 @@ import numpy as np
 import constants
 
 
+
 # input: two cv2 rectangles
 # output: true if rectangle one is contained within rectangle 2
 # also returns a new rectangle that contains the two inputed rectangles
@@ -39,12 +40,13 @@ def contains(R1, R2):
     # each feature contains one another
     # also returns the percentage of the screen the face returns
 def face_detector(image):
+
     max_pixels = 0
     return_me = False
 
-    cascPath = "Required_Files/haarcascade_frontalface_default.xml"
-    cascPath_m = "Required_Files/haarcascade_mouth.xml"
-    cascPath_e = "Required_Files/haarcascade_eye.xml"
+    cascPath = "haarcascade_frontalface_default_new.xml"
+    cascPath_m = "haarcascade_mouth_new.xml"
+    cascPath_e = "haarcascade_eye_new.xml"
 
     faceCascade = cv2.CascadeClassifier(cascPath)
     mouthCascade = cv2.CascadeClassifier(cascPath_m)
@@ -168,15 +170,18 @@ def face_percentage(filename):
 def cluster_by_seconds(face_time_arr, cluster_time):
     time_segments = int(face_time_arr[-1] // cluster_time + 1)
     cluster_array = [0] * time_segments
-    print(time_segments)
     for time in face_time_arr:
         cluster_array[int(time // cluster_time)] += 1
     return cluster_array
 
 
 def main(argv):
+    # required
+    path = os.getcwd()
     # getting filename from argument
-    filename = ' '.join(sys.argv[1:])
+    # filename = ' '.join(sys.argv[1:])
+    filename = sys.argv[1]
+    new_path = sys.argv[2]
 
     # main function -> face_percentage
     percentage_of_video, face_time, face_size = face_percentage(filename)
@@ -186,7 +191,8 @@ def main(argv):
                        f'The face took up {sum(face_size) / len(face_size)} of the screen.']
 
     # things to write in output.txt
-    constants.text_formatter(os.path.basename(__file__), things_to_print)
+    print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
+    constants.text_formatter(os.path.basename(__file__), things_to_print, print_dir)
 
     # cluster_time and seconds_cluster
     cluster_time = constants.FOOD_HOST_SCREEN_TIME_CLUSTER_TIME
@@ -211,7 +217,7 @@ def main(argv):
     plt.xlabel("Time interval of video (in seconds)")
     plt.title("The face detections per time interval")
 
-    fig.savefig("outputs/food_host_screen_time_plot")
+    fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) + "/outputs/" + new_path + "/food_host_screen_time_plot")
 
 
 if __name__ == '__main__':

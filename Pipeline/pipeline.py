@@ -3,9 +3,7 @@ import os.path
 import sys
 import validators # validates that urls are legit (pip install validators)
 import subprocess
-
-# we can add support for specific arguments.
-# making barebone command line input reader
+from datetime import datetime
 
 # run in command line like this:
 # python .\pipeline.py INSERT_VIDEO_PATH_HERE <-- in "quotes"
@@ -39,10 +37,18 @@ def main(argv):
     else:
         raise SyntaxError("Cannot read video file")
     
-    os.system("python cut_frequency.py " + video_path_or_link) 
-    os.system("python food_host_screen_time.py " + video_path_or_link)
+    # make new output directory by date and time
+    now = datetime.now()
+    dt_string = now.strftime("%d-%m-%Y--%H-%M-%S")
 
-    
+    new_path = os.getcwd() + "/outputs/" + dt_string
+    os.makedirs(new_path)
+
+    # i apologize for this weird syntax, but it works"
+    os.chdir(os.getcwd() + "/Scripts")
+    os.system("python cut_frequency.py " + '''"''' + video_path_or_link + '''" ''' + dt_string) 
+    os.system("python food_host_screen_time.py " + '''"''' + video_path_or_link + '''" ''' + dt_string)
+    os.chdir("..")    
 
 if __name__ == '__main__':
     main(sys.argv)

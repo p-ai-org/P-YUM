@@ -1,0 +1,13 @@
+#######################################################
+Outputs for cut_frequency.py
+
+The total length of the video is 304.7044
+The video had 195 cuts
+There are 0.6399645033022168 cuts per second
+
+#######################################################
+Outputs for food_host_screen_time.py
+
+A face was detected for 15.007656967840735% of the video.
+The face took up 10.912875566893424 of the screen.
+

@@ -1,11 +1,9 @@
 from datetime import datetime
 
 # general output.txt file setup
-def text_formatter(filename, things_to_print_out):
-    now = datetime.now()
-    dt_string = now.strftime("%d-%m-%Y %H-%M-%S")
+def text_formatter(filename, things_to_print_out, output_file):
 
-    with open('outputs/output.txt' + dt_string, "a") as f:
+    with open(output_file, "a") as f:
         f.write('#######################################################\n')
         f.write(f"Outputs for {filename}\n\n")
         for things_to_print in things_to_print_out:

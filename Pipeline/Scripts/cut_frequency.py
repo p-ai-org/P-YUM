@@ -43,8 +43,12 @@ def time_converted(cuts_in_seconds, scene_list):
 
 
 def main(argv):
+    # required
+    path = os.getcwd()
     # the videopath
-    filename = ' '.join(sys.argv[1:])
+    # filename = ' '.join(sys.argv[1:])
+    filename = sys.argv[1]
+    new_path = sys.argv[2]
 
     # detecting number of cuts
     scene_list = detect(filename, ContentDetector())
@@ -60,7 +64,8 @@ def main(argv):
                        f'The video had {len(scene_list)} cuts', f'There are {len(scene_list) / vid_length} cuts per second']
     
     # things to write in output.txt
-    constants.text_formatter(os.path.basename(__file__), things_to_print)
+    print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
+    constants.text_formatter(os.path.basename(__file__), things_to_print, print_dir)
 
     # getting cuts (in seconds) from video
     cuts_in_seconds = []
@@ -88,7 +93,7 @@ def main(argv):
     plt.xlabel("Time interval of video (in seconds)")
     plt.title("The number of cuts per time interval")
 
-    fig.savefig("outputs/cut_frequency_plot")
+    fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) + "/outputs/" + new_path + "/cut_frequency_plot")
 
 
 if __name__ == '__main__':

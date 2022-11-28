@@ -1,7 +1,0 @@
-#######################################################
-Outputs for cut_frequency.py
-
-The total length of the video is 304.7044
-The video had 195 cuts
-There are 0.6399645033022168 cuts per second
-

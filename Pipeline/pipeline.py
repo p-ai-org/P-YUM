@@ -46,8 +46,9 @@ def main(argv):
 
     # i apologize for this weird syntax, but it works"
     os.chdir(os.getcwd() + "/Scripts")
-    os.system("python cut_frequency.py " + '''"''' + video_path_or_link + '''" ''' + dt_string) 
-    os.system("python food_host_screen_time.py " + '''"''' + video_path_or_link + '''" ''' + dt_string)
+    # os.system("python cut_frequency.py " + '''"''' + video_path_or_link + '''" ''' + dt_string) 
+    # os.system("python food_host_screen_time.py " + '''"''' + video_path_or_link + '''" ''' + dt_string)
+    os.system("python speech_complexity.py " + '''"''' + video_path_or_link + '''" ''' + dt_string)
     os.chdir("..")    
 
 if __name__ == '__main__':

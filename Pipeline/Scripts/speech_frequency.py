@@ -1,7 +1,6 @@
 import os
 import shutil
 import cv2
-import re
 import os.path
 import sys
 import speech_recognition as sr
@@ -9,6 +8,7 @@ import moviepy.editor as mp
 from pathlib import Path
 from pydub import AudioSegment
 from pydub.utils import make_chunks
+import matplotlib.pyplot as plt
 import constants
 
 
@@ -44,7 +44,8 @@ def find_video_length(filename):
 # audio file MUST BE LOSSLESS
 def vid_to_audio(filename):
     clip = mp.VideoFileClip(filename)
-    mp3_clip = clip.audio.write_audiofile(r"converted.wav")
+    mp3_clip = clip.audio.write_audiofile(
+        r"converted.wav", verbose=False, logger=None)
 
 
 # we must split the videos into smaller chunks because the voice
@@ -90,8 +91,10 @@ def main(argv):
     new_path = sys.argv[2]
 
     # start
+    print("\tConverting the video file into a wav file")
     vid_to_audio(filename)
 
+    print("\tProcessing the wav file and extracting the speech")
     all_file_names = os.listdir()
     try:
         os.makedirs(os.getcwd() + '/chunked')
@@ -122,23 +125,51 @@ def main(argv):
                 list_of_chunks_words.append(thirty_sec)
 
     # make the script
+    print("\tMaking the script")
     entire_script = ''
     for chunks in list_of_chunks_words:
-        print(chunks)
         entire_script += " " + chunks
 
     # write to txt.file
-    print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path
-    with open(print_dir + '/Entire Speech', mode='w') as script_file:
+    print_dir = os.path.abspath(os.path.join(
+        path, os.pardir)) + '/outputs/' + new_path
+    with open(print_dir + '/Entire Speech.txt', mode='w') as script_file:
         script_file.write(entire_script)
 
     num_of_words = len(entire_script.split())
     length_of_vid = find_video_length(filename)
 
     # things to print in output.txt
-    things_to_print = [f'Your video had around {length_of_vid / num_of_words} words per second', f'The length of the video is {length_of_vid} seconds']
-    print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
-    constants.text_formatter(os.path.basename(__file__), things_to_print, print_dir)
+    things_to_print = [f'Your video had around {length_of_vid / num_of_words} words per second',
+                       f'The length of the video is {length_of_vid} seconds']
+    print_dir = os.path.abspath(os.path.join(
+        path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
+    constants.text_formatter(os.path.basename(
+        __file__), things_to_print, print_dir)
+
+    # we have the entire script, and we know that each wav file is
+    # incremented into 5 seconds
+    fig = plt.figure()
+
+    time_intervals = []
+    words_cluster = []
+    for i in range(len(list_of_chunks_words)):
+        time_intervals.append(f"{i * 5}-{i * 5 + 5}")
+        words_cluster.append(len(list_of_chunks_words[i]))
+
+    fig.set_figwidth(20)
+    fig.set_figheight(7)
+    plt.xticks(rotation=30)
+
+    # creating graph
+    plt.bar(time_intervals, words_cluster)
+
+    plt.ylabel("Number of words")
+    plt.xlabel("Time interval of audio (in seconds)")
+    plt.title("The number of words said per time interval")
+
+    fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) +
+                "/outputs/" + new_path + "/speech_frequency")
 
     # delete wav files
     clear_wav()

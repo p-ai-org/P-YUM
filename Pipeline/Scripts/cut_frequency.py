@@ -51,8 +51,10 @@ def main(argv):
     new_path = sys.argv[2]
 
     # detecting number of cuts
+    print("\tDetecting the number of cuts")
     scene_list = detect(filename, ContentDetector())
 
+    print("\tDetermining the length of the video")
     # length of video
     vid_length = find_video_length(filename)
 

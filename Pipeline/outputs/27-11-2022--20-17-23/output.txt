@@ -1,5 +1,0 @@
-#######################################################
-Outputs for speech_complexity.py
-
-Your video had around 1.1810248062015505 words per second
-

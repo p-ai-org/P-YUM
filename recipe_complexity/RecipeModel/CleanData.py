@@ -1,6 +1,5 @@
 import re
-
-from ingredient_phrase_tagger.training import tokenizer
+import NLPClean
 
 
 def joinLine(columns):
@@ -271,10 +270,11 @@ def import_data(lines):
 
 def export_data(lines):
     """ Parse "raw" ingredient lines into CRF-ready output """
+    print(lines)
     output = []
     for line in lines:
         line_clean = re.sub('<[^<]+?>', '', line)
-        tokens = tokenizer.tokenize(line_clean)
+        tokens = NLPClean.tokenize(line_clean)
 
         for i, token in enumerate(tokens):
             features = getFeatures(token, i + 1, tokens)

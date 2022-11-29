@@ -184,6 +184,8 @@ def main(argv):
     new_path = sys.argv[2]
 
     # main function -> face_percentage
+    print("\tFinding the percentage of the video where a face was detected")
+    print("\tFinding the percentage of which the face takes up the entire frame")
     percentage_of_video, face_time, face_size = face_percentage(filename)
 
     # printing out face_percentage and average size of face compared to video frame size

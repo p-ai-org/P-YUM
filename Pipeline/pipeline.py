@@ -46,9 +46,17 @@ def main(argv):
 
     # i apologize for this weird syntax, but it works"
     os.chdir(os.getcwd() + "/Scripts")
-    # os.system("python cut_frequency.py " + '''"''' + video_path_or_link + '''" ''' + dt_string) 
-    # os.system("python food_host_screen_time.py " + '''"''' + video_path_or_link + '''" ''' + dt_string)
-    os.system("python speech_complexity.py " + '''"''' + video_path_or_link + '''" ''' + dt_string)
+
+    print("Starting cut_frequency script")
+    os.system("python cut_frequency.py " + '''"''' + video_path_or_link + '''" ''' + dt_string) 
+
+    print("Starting food_host_screen_time script")
+    os.system("python food_host_screen_time.py " + '''"''' + video_path_or_link + '''" ''' + dt_string)
+
+    print("Starting speech_frequency script")
+    os.system("python speech_frequency.py " + '''"''' + video_path_or_link + '''" ''' + dt_string)
+
+    print(f"Done! Check out the output by going to the output directory and then the {dt_string} directory")
     os.chdir("..")    
 
 if __name__ == '__main__':

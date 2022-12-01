@@ -49,6 +49,7 @@ def main(argv):
     # filename = ' '.join(sys.argv[1:])
     filename = sys.argv[1]
     new_path = sys.argv[2]
+    # print("bruh", os.path.basename(filename)[:-4])
 
     # detecting number of cuts
     print("\tDetecting the number of cuts")
@@ -66,7 +67,8 @@ def main(argv):
                        f'The video had {len(scene_list)} cuts', f'There are {len(scene_list) / vid_length} cuts per second']
     
     # things to write in output.txt
-    print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
+    # print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
+    print_dir = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, 'output.txt')
     constants.text_formatter(os.path.basename(__file__), things_to_print, print_dir)
 
     # getting cuts (in seconds) from video
@@ -95,7 +97,8 @@ def main(argv):
     plt.xlabel("Time interval of video (in seconds)")
     plt.title("The number of cuts per time interval")
 
-    fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) + "/outputs/" + new_path + "/cut_frequency_plot")
+    # fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) + "/outputs/" + new_path + f"{os.path.basename(filename)}_/cut_frequency_plot")
+    fig.savefig(os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, f"{os.path.basename(filename)[:-4]}_cut_frequency_plot.jpg"))
 
 
 if __name__ == '__main__':

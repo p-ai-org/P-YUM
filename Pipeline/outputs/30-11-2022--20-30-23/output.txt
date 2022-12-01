@@ -1,0 +1,30 @@
+OUTPUTS FOR SnapSave.io-A pie that's literally all crust-(480p).mp4
+
+#######################################################
+Outputs for cut_frequency.py
+
+The total length of the video is 370.03633333333335
+The video had 63 cuts
+There are 0.17025355167825862 cuts per second
+
+#######################################################
+Outputs for food_host_screen_time.py
+
+A face was detected for 1.7654476670870114% of the video.
+The face took up 4.867622253819561 of the screen.
+
+#######################################################
+Outputs for speech_frequency.py
+
+Your video had around 0.31708340474150243 words per second
+The length of the video is 370.03633333333335 seconds
+
+OUTPUTS FOR SnapSave.io-Cheesy broiled sheet pan pasta with vegetables-(480p).mp4
+
+#######################################################
+Outputs for cut_frequency.py
+
+The total length of the video is 439.3722666666667
+The video had 58 cuts
+There are 0.13200651110736164 cuts per second
+

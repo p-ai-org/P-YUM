@@ -188,38 +188,46 @@ def main(argv):
     print("\tFinding the percentage of which the face takes up the entire frame")
     percentage_of_video, face_time, face_size = face_percentage(filename)
 
+    try:
+        face_size_percentage = sum(face_size) / len(face_size)
+    except:
+        face_size_percentage = 0
+
     # printing out face_percentage and average size of face compared to video frame size
     things_to_print = [f'A face was detected for {percentage_of_video}% of the video.',
-                       f'The face took up {sum(face_size) / len(face_size)} of the screen.']
+                       f'The face took up {face_size_percentage} of the screen.']
 
     # things to write in output.txt
-    print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
+    # print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
+    print_dir = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, 'output.txt')
     constants.text_formatter(os.path.basename(__file__), things_to_print, print_dir)
 
-    # cluster_time and seconds_cluster
-    cluster_time = constants.FOOD_HOST_SCREEN_TIME_CLUSTER_TIME
-    seconds_cluster = cluster_by_seconds(face_time, cluster_time)
+    if not len(face_size) == 0:
+        # cluster_time and seconds_cluster
+        cluster_time = constants.FOOD_HOST_SCREEN_TIME_CLUSTER_TIME
+        seconds_cluster = cluster_by_seconds(face_time, cluster_time)
 
-    # creating time_intervals as to when face was encountered
-    time_intervals = []
-    for i in range(len(seconds_cluster)):
-        time_intervals.append(
-            f"{i * cluster_time}-{i * cluster_time + cluster_time} sec")
+        # creating time_intervals as to when face was encountered
+        time_intervals = []
+        for i in range(len(seconds_cluster)):
+            time_intervals.append(
+                f"{i * cluster_time}-{i * cluster_time + cluster_time} sec")
 
-    # graph setup
-    fig = plt.figure()
-    fig.set_figwidth(20)
-    fig.set_figheight(7)
-    plt.xticks(rotation=30)
+        # graph setup
+        fig = plt.figure()
+        fig.set_figwidth(20)
+        fig.set_figheight(7)
+        plt.xticks(rotation=30)
 
-    # creating graph
-    plt.bar(time_intervals, seconds_cluster)
+        # creating graph
+        plt.bar(time_intervals, seconds_cluster)
 
-    plt.ylabel("Number of face detections within time interval")
-    plt.xlabel("Time interval of video (in seconds)")
-    plt.title("The face detections per time interval")
+        plt.ylabel("Number of face detections within time interval")
+        plt.xlabel("Time interval of video (in seconds)")
+        plt.title("The face detections per time interval")
 
-    fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) + "/outputs/" + new_path + "/food_host_screen_time_plot")
+        # fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) + "/outputs/" + new_path + f"/{os.path.basename(filename)}_food_host_screen_time_plot")
+        fig.savefig(os.path.join(os.path.abspath(os.path.join(path, os.pardir)), "outputs", new_path, f"{os.path.basename(filename)[:-4]}_food_host_screen_time_plot.jpg"))
 
 
 if __name__ == '__main__':

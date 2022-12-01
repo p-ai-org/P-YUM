@@ -44,8 +44,11 @@ def find_video_length(filename):
 # audio file MUST BE LOSSLESS
 def vid_to_audio(filename):
     clip = mp.VideoFileClip(filename)
-    mp3_clip = clip.audio.write_audiofile(
-        r"converted.wav", verbose=False, logger=None)
+    try:
+        mp3_clip = clip.audio.write_audiofile(
+            r"converted.wav", verbose=False, logger=None)
+    except:
+        print("Wav file already exists")
 
 
 # we must split the videos into smaller chunks because the voice
@@ -59,6 +62,7 @@ def process_audio(file_name):
     chunks = make_chunks(myaudio, chunk_length_ms)  # Make chunks of one sec
     for i, chunk in enumerate(chunks):
         chunk_name = './chunked/' + file_name + "_{0}.wav".format(i)
+        # chunk_name = os.path.join("chunked", file_name, "_{0}.wav".format(i))
         chunk.export(chunk_name, format="wav")
 
 
@@ -67,6 +71,7 @@ def process_audio(file_name):
 # output: the speech in string format
 def speech_converter(wav_file, r):
     wav_name = './chunked/' + wav_file
+    # wav_name = os.path.join('chunked', wav_file)
     audio = sr.AudioFile(wav_name)
 
     with audio as source:
@@ -97,13 +102,14 @@ def main(argv):
     print("\tProcessing the wav file and extracting the speech")
     all_file_names = os.listdir()
     try:
-        os.makedirs(os.getcwd() + '/chunked')
+        os.makedirs(os.path.join(os.getcwd(), 'chunked'))
     except:
         pass
     for each_file in all_file_names:
         if '.wav' in each_file:
             process_audio(each_file)
-    os.remove(os.getcwd() + "/converted.wav")  # delete the original wav file.
+    # os.remove(os.getcwd() + "/converted.wav")  # delete the original wav file.
+    os.remove(os.path.join(os.getcwd(), "converted.wav"))
 
     # define recognizer
     r = sr.Recognizer()
@@ -131,8 +137,8 @@ def main(argv):
         entire_script += " " + chunks
 
     # write to txt.file
-    print_dir = os.path.abspath(os.path.join(
-        path, os.pardir)) + '/outputs/' + new_path
+    # print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path
+    print_dir = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path)
     with open(print_dir + '/Entire Speech.txt', mode='w') as script_file:
         script_file.write(entire_script)
 
@@ -142,8 +148,8 @@ def main(argv):
     # things to print in output.txt
     things_to_print = [f'Your video had around {length_of_vid / num_of_words} words per second',
                        f'The length of the video is {length_of_vid} seconds']
-    print_dir = os.path.abspath(os.path.join(
-        path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
+    # print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
+    print_dir = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, 'output.txt')
     constants.text_formatter(os.path.basename(
         __file__), things_to_print, print_dir)
 
@@ -168,8 +174,8 @@ def main(argv):
     plt.xlabel("Time interval of audio (in seconds)")
     plt.title("The number of words said per time interval")
 
-    fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) +
-                "/outputs/" + new_path + "/speech_frequency")
+    # fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) + "/outputs/" + new_path + f"/{os.path.basename(filename)}_speech_frequency")
+    fig.savefig(os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, f"{os.path.basename(filename)[:-4]}_speech_frequency.jpg"))
 
     # delete wav files
     clear_wav()

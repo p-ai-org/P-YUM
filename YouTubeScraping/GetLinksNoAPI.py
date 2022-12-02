@@ -27,8 +27,8 @@ def get_urls(source):
         for name in entry.find_all("name"):
             channel = name.text
         for pub in entry.find_all("published"):
-            date_pub = pub.text
-        entry_dict_list.append({'channel': channel, 'link': ref, 'video name':vidname, 'publication date': date_pub})
+            datepub = pub.text
+        entry_dict_list.append({'channel': channel, 'link': ref, 'video name':vidname, 'publication date': datepub})
     return pd.DataFrame.from_dict(entry_dict_list)
 
 # %%

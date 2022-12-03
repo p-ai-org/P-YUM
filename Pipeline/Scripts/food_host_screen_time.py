@@ -5,7 +5,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import constants
-
+import cut_frequency
 
 
 # input: two cv2 rectangles
@@ -194,12 +194,12 @@ def main(argv):
         face_size_percentage = 0
 
     # printing out face_percentage and average size of face compared to video frame size
-    things_to_print = [f'A face was detected for {percentage_of_video}% of the video.',
-                       f'The face took up {face_size_percentage} of the screen.']
+    things_to_print = [f'A face was detected for {round(percentage_of_video, 2)}% of the video.',
+                       f'The face took up {round(face_size_percentage, 2)}% of the screen.']
 
     # things to write in output.txt
     # print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
-    print_dir = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, 'output.txt')
+    print_dir = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, os.path.basename(filename), 'output.txt')
     constants.text_formatter(os.path.basename(__file__), things_to_print, print_dir)
 
     if not len(face_size) == 0:
@@ -224,10 +224,12 @@ def main(argv):
 
         plt.ylabel("Number of face detections within time interval")
         plt.xlabel("Time interval of video (in seconds)")
-        plt.title("The face detections per time interval")
+        plt.title(f"The face detections per time interval for {os.path.basename(filename)[:-4]}")
 
         # fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) + "/outputs/" + new_path + f"/{os.path.basename(filename)}_food_host_screen_time_plot")
-        fig.savefig(os.path.join(os.path.abspath(os.path.join(path, os.pardir)), "outputs", new_path, f"{os.path.basename(filename)[:-4]}_food_host_screen_time_plot.jpg"))
+        fig.savefig(os.path.join(os.path.abspath(os.path.join(path, os.pardir)), "outputs", new_path, os.path.basename(filename), f"food_host_screen_time_plot.jpg"))
+
+        constants.csv_append([round(percentage_of_video, 2), round(face_size_percentage, 2)])
 
 
 if __name__ == '__main__':

@@ -10,6 +10,7 @@ from pydub import AudioSegment
 from pydub.utils import make_chunks
 import matplotlib.pyplot as plt
 import constants
+import csv
 
 
 # input: string_script: the subtitles of a video as a string
@@ -146,10 +147,9 @@ def main(argv):
     length_of_vid = find_video_length(filename)
 
     # things to print in output.txt
-    things_to_print = [f'Your video had around {length_of_vid / num_of_words} words per second',
-                       f'The length of the video is {length_of_vid} seconds']
+    things_to_print = [f'Around {num_of_words} words were detected in the video', f'The video had around {round(length_of_vid / num_of_words, 2)} words per second']
     # print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
-    print_dir = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, 'output.txt')
+    print_dir = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, os.path.basename(filename), 'output.txt')
     constants.text_formatter(os.path.basename(
         __file__), things_to_print, print_dir)
 
@@ -172,14 +172,22 @@ def main(argv):
 
     plt.ylabel("Number of words")
     plt.xlabel("Time interval of audio (in seconds)")
-    plt.title("The number of words said per time interval")
+    plt.title(f"The number of words said per time interval for {os.path.basename(filename)[:-4]}")
 
     # fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) + "/outputs/" + new_path + f"/{os.path.basename(filename)}_speech_frequency")
-    fig.savefig(os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, f"{os.path.basename(filename)[:-4]}_speech_frequency.jpg"))
+    fig.savefig(os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, os.path.basename(filename), "speech_frequency.jpg"))
 
     # delete wav files
     clear_wav()
 
+    constants.csv_append([num_of_words, round(length_of_vid / num_of_words, 2)])
+
+    csv_path = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir)), "outputs", new_path, "MASTER_OUTPUT.csv")
+    with open(csv_path, "a", encoding='UTF8', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(constants.CSV_LIST)    
+        
+    constants.CSV_LIST = []
 
 if __name__ == '__main__':
     main(sys.argv)

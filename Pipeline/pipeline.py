@@ -4,8 +4,11 @@ import sys
 import validators # validates that urls are legit (pip install validators)
 import subprocess
 from datetime import datetime
+from Scripts import constants
+import csv
 
 # run in command line like this:
+# make sure you changed directory to pipeline folder
 # python .\pipeline.py INSERT_VIDEO_PATH_HERE <-- in "quotes"
 
 def main(argv):
@@ -33,15 +36,21 @@ def main(argv):
         # os.chdir(os.getcwd() + "/Scripts")
         os.chdir(os.path.join(os.getcwd(), "Scripts"))
 
-        print_path = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir)), "outputs", dt_string, "MASTER_OUTPUT.txt")
-        with open(print_path, "a") as f:
-            f.write(f"MASTER OUTPUT FOR ALL VIDEOS\n\n")
+        header = ['Video Name', 'Total Length of Video in Seconds', 'Number of Cuts', 'Cuts per Second', 
+                   'Face-Detection percentage', 'Face-Size percentage', 'Number of Words Spoken', 'Words per Second']
+        csv_path = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir)), "outputs", dt_string, "MASTER_OUTPUT.csv")
+        with open(csv_path, "a", encoding='UTF8', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(header)            
 
     
         for vid_path in path_of_all_videos:
             # print(f"Processing {os.path.basename(vid_path)}")
 
-            print_path = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir)), "outputs", dt_string, f"output.txt")
+            individual_video_path = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir)), "outputs", dt_string, os.path.basename(vid_path))
+            os.makedirs(individual_video_path)
+
+            print_path = os.path.join(individual_video_path, f"output.txt")
             # print(print_path)
             with open(print_path, "a") as f:
                 f.write(f"OUTPUTS FOR {os.path.basename(vid_path)}\n\n")

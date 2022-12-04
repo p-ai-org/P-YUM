@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import constants
 import cut_frequency
+from global_var import *
 
 
 # input: two cv2 rectangles
@@ -229,7 +230,20 @@ def main(argv):
         # fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) + "/outputs/" + new_path + f"/{os.path.basename(filename)}_food_host_screen_time_plot")
         fig.savefig(os.path.join(os.path.abspath(os.path.join(path, os.pardir)), "outputs", new_path, os.path.basename(filename), f"food_host_screen_time_plot.jpg"))
 
-        constants.csv_append([round(percentage_of_video, 2), round(face_size_percentage, 2)])
+    # global_var.init()
+    # global_var.csv_append([round(percentage_of_video, 2), round(face_size_percentage, 2)])
+    # csv_append([round(percentage_of_video, 2), round(face_size_percentage, 2)])
+    # constants.CSV_LIST.append(round(percentage_of_video, 2))
+    # constants.CSV_LIST.append(round(face_size_percentage, 2))
+    line = [round(percentage_of_video, 2), round(face_size_percentage, 2)]
+    txt_path = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir)), "outputs", new_path, "MASTER_OUTPUT.txt")
+    with open(txt_path, 'a') as f:
+        for i in range(len(line)):
+            f.write(str(line[i]) + ",./")
+            # if not i == len(line) - 1:
+            #     f.write(',')
+
+
 
 
 if __name__ == '__main__':

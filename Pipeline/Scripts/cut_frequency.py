@@ -7,6 +7,7 @@ import constants
 import datetime
 import time
 import csv
+from global_var import *
 from scenedetect import detect, ContentDetector
 
 
@@ -101,7 +102,24 @@ def main(argv):
     # fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) + "/outputs/" + new_path + f"{os.path.basename(filename)}_/cut_frequency_plot")
     fig.savefig(os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, os.path.basename(filename), f"cut_frequency_plot.jpg"))
 
-    constants.csv_append([os.path.basename(filename)[:-4], round(vid_length, 2), len(scene_list), round(len(scene_list) / vid_length, 2)])
+    # constants.csv_append([os.path.basename(filename)[:-4], round(vid_length, 2), len(scene_list), round(len(scene_list) / vid_length, 2)])
+    # global_var.init()
+    # global_var.csv_append([os.path.basename(filename)[:-4], round(vid_length, 2), len(scene_list), round(len(scene_list) / vid_length, 2)])
+    # csv_append([os.path.basename(filename)[:-4], round(vid_length, 2), len(scene_list), round(len(scene_list) / vid_length, 2)])
+
+    line = [os.path.basename(filename)[:-4], round(vid_length, 2), len(scene_list), round(len(scene_list) / vid_length, 2)]
+    txt_path = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir)), "outputs", new_path, "MASTER_OUTPUT.txt")
+    with open(txt_path, 'a') as f:
+        for i in range(len(line)):
+            f.write(str(line[i]) + ',./')
+            # if not i == len(line) - 1:
+            #     f.write(',')
+
+
+    # constants.CSV_LIST.append(os.path.basename(filename)[:-4])
+    # constants.CSV_LIST.append(round(vid_length, 2))
+    # constants.CSV_LIST.append(len(scene_list))
+    # constants.CSV_LIST.append(round(len(scene_list) / vid_length, 2))
 
 
 if __name__ == '__main__':

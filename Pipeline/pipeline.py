@@ -1,7 +1,6 @@
 import os
 import os.path
 import sys
-import validators # validates that urls are legit (pip install validators)
 import subprocess
 from datetime import datetime
 from Scripts import constants
@@ -42,6 +41,14 @@ def main(argv):
         with open(csv_path, "a", encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(header)            
+        # with open(txt_path, 'a') as f:
+
+        #     for i in range(len(header)):
+        #         f.write(header[i])
+        #         if not i == len(header) - 1:
+        #             f.write(',')
+        #     f.write('\n')
+
 
     
         for vid_path in path_of_all_videos:

@@ -11,11 +11,6 @@ def text_formatter(filename, things_to_print_out, output_file):
         f.write('\n')
 
 
-# used for Master CSV
-def csv_append(list):
-    for element in list:
-        CSV_LIST.append(element)
-
 # used in cut_frequency.py
 # for graphing purposes
 CUT_FREQUENCY_CLUSTER_TIME = 10
@@ -23,7 +18,3 @@ CUT_FREQUENCY_CLUSTER_TIME = 10
 # used in food_host_screen_time.py
 # for graphing purposes
 FOOD_HOST_SCREEN_TIME_CLUSTER_TIME = 10
-
-
-# used for printing out each row in the CSV
-CSV_LIST = []

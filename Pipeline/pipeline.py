@@ -16,7 +16,7 @@ def main(argv):
     if len(sys.argv) == 1:
         path_of_all_videos = []
         path = "./"
-        AllFiles = list(os.walk(os.path.abspath(os.path.join(path, os.pardir))))
+        AllFiles = list(os.walk(os.path.join(os.path.abspath(os.path.join(path, os.pardir)), "videos")))
         for item in AllFiles:
             foldername, LoDirs, LoFiles = item   # cool unpacking!
 

@@ -193,12 +193,12 @@ def main(argv):
         for i in range(len(line)):
             f.write(str(line[i]))
             if not i == len(line) - 1:
-                f.write(',./')
+                f.write(',-.<>-+')
 
     with open(txt_path, 'r', encoding='UTF-8') as f:
         lines = f.readlines()
     
-    list_lines = lines[0].split(",./")
+    list_lines = lines[0].split(",-.<>-+")
     # print("list_lines is", list_lines)
     # print("lines[0] is", lines[0])
     # print("list_lines[0] type is", type(list_lines[0]))

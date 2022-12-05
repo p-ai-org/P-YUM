@@ -1,1 +1,0 @@
-Video Name,Total Length of Video in Seconds,Number of Cuts,Cuts per Second,Face-Detection percentage,Face-Size percentage,Number of Words Spoken,Words per Second

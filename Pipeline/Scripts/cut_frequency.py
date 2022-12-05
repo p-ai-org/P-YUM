@@ -111,7 +111,7 @@ def main(argv):
     txt_path = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir)), "outputs", new_path, "MASTER_OUTPUT.txt")
     with open(txt_path, 'a') as f:
         for i in range(len(line)):
-            f.write(str(line[i]) + ',./')
+            f.write(str(line[i]) + ',-.<>-+')
             # if not i == len(line) - 1:
             #     f.write(',')
 

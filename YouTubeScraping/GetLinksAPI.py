@@ -1,7 +1,12 @@
+'''
+sort videos for youtubers into file:
+we want adam ragusea, joshua weissman, gordon ramsay, foodwishes
+'''
 # %%
 import scrapetube
 import pickle
-
+import pandas as pd
+import datetime
 # %%
 ragusea_vids = scrapetube.get_channel(channel_url="https://www.youtube.com/@aragusea")
 # %%
@@ -14,7 +19,6 @@ for video in ragusea_vids:
     vid_lim += 1
 
 # %%
-import datetime
 def rel_date_to_dt(rel_date):
     parsed_s = [rel_date.split()[:2]]
     parsed_s[0][1] = 'days'
@@ -37,15 +41,27 @@ def raw_vid_to_dict(sample_vid):
     return vid_dict
 
 # %%
-import pandas as pd
-dict_list = []
-for video in rag_video_arr:
-    dict_list.append(raw_vid_to_dict(video))
-rag_df = pd.DataFrame(dict_list, index = False)
+def channel_to_df(channel_in, identifier_string):
+    channel_vids = scrapetube.get_channel(channel_url=channel_in)
+    vid_lim = 0
+    video_array = []
+
+    for video in channel_vids:
+        if vid_lim == 300:
+            break
+        video_array.append(video)
+        vid_lim += 1
+
+    dict_list = []
+    for video in video_array:
+        dict_list.append(raw_vid_to_dict(video))
+    video_df = pd.DataFrame(dict_list)
+    video_df.to_csv(identifier_string + ".csv")
+
+    return video_df
+
 # %%
-rag_df.to_csv("RaguseaChannelVideos.csv")
+channel_url="https://www.youtube.com/@JoshuaWeissman"
+channel_to_df(channel_url, "AdamRaguseaVideos")
+
 # %%
-def url_to_id(vid_url):
-    url_data = urlparse.urlparse(vid_url)
-    query = urlparse.parse_qs(url_data.query)
-    video = query["v"][0]

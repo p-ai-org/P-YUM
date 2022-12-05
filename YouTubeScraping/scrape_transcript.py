@@ -1,3 +1,4 @@
+# %%
 from youtube_transcript_api import YouTubeTranscriptApi
 import nltk
 from nltk.tokenize import word_tokenize
@@ -13,7 +14,7 @@ import numpy as np
 import csv
 
 
-# preprocess_reviews removes non-alphabetical characters, stop words, and lemmatizes dataset
+# %% preprocess_reviews removes non-alphabetical characters, stop words, and lemmatizes dataset
 def preprocess_text(reviews):
     lemmatizer = WordNetLemmatizer()
     tokens = word_tokenize(reviews)
@@ -28,8 +29,41 @@ def preprocess_text(reviews):
     cleaned = [w for w in words if w not in stop_words]
     super_clean = [lemmatizer.lemmatize(word) for word in cleaned]
     return super_clean
+# %%
+def fetch_transcripts(video_id):
+    try:
+        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+        try:
+            full_trans = ''
+            transcript = transcript_list.find_transcript(['en', 'en-US'])
+            text_list = transcript.fetch()
+            for chunk in text_list:
+                print(chunk)
+                full_trans += ' ' + chunk['text']
+            return full_trans
+        except:
+            try:
+            # if the transcript is not in english, autogenerate english captions from that language
+                transcript = transcript_list.find_transcript([
+                    'de', 'zh_Hans', 'fr', 'zh-Hant', 'es',
+                    'ar', 'hi', 'it', 'ru', 'vi', 'th', 'sv',
+                    'fa', 'pt', 'cs', 'na', 'nl', 'el', 'fil', 'zh-TW'
+                ])
+                full_trans = ''
+                translated_transcript = transcript.translate('en')
+                for text in translated_transcript:
+                    full_trans += ' ' + text['text']
+                return full_trans
+            except:
+                translated_transcript = ''
+                return translated_transcript
+    except:
+        return ''
 
-# gathers the transcript when given a youtube video id
+# %%
+fetch_transcripts('ahxKAlbp6DU')
+
+# %% gathers the transcript when given a youtube video id
 def get_transcripts(video_id, date_pub, names_in, country_in, category_in):
     try:
         transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
@@ -75,7 +109,7 @@ def get_transcripts(video_id, date_pub, names_in, country_in, category_in):
             csvwriter.writerow([date_pub, names_in, '*'])
             print('done writing')
  
-# writes the period published, name, and transcript of a given video to the csv file
+# %% writes the period published, name, and transcript of a given video to the csv file
 def write_transcripts(category_num, country_in):
     file = open('/home/txaa2019/free_gourds/Youtube Grab/Categories/' + country_in + '/' + category_num + '.csv')
     csv_f = csv.reader(file)
@@ -89,7 +123,7 @@ def write_transcripts(category_num, country_in):
     for links, dates, names in zip(links_in, dates_in, names_in):
         get_transcripts(links, dates, names, country_in, category_num)
 
-# gathers the transcript when given a youtube video id but does so for videos that are not filtered by id
+# %% gathers the transcript when given a youtube video id but does so for videos that are not filtered by id
 def get_transcripts_all(video_id, date_pub, names_in, country_in):
     try:
         transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
@@ -134,7 +168,7 @@ def get_transcripts_all(video_id, date_pub, names_in, country_in):
             csvwriter.writerow([date_pub, names_in, '*'])
             print('done writing')
 	
-# writes the transcript to a csv file
+# %% writes the transcript to a csv file
 def write_transcripts_all(country_in):
     file = open('/home/txaa2019/free_gourds/Youtube Grab/Categories/All/' + country_in + '_nocat.csv')
 #     file = open('/home/txaa2019/free_gourds/Youtube Grab/Categories/All/global.csv')

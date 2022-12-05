@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import constants
 import datetime
 import time
+import csv
+from global_var import *
 from scenedetect import detect, ContentDetector
 
 
@@ -63,12 +65,12 @@ def main(argv):
     # print(f'The total length of the video is {vid_length}')
     # print(f'The video had {len(scene_list)} cuts')
     # print(f'There are {len(scene_list) / vid_length} cuts per second')
-    things_to_print = [f'The total length of the video is {vid_length}',
-                       f'The video had {len(scene_list)} cuts', f'There are {len(scene_list) / vid_length} cuts per second']
+    things_to_print = [f'The total length of the video is {round(vid_length, 2)}',
+                       f'The video had {len(scene_list)} cuts', f'There are {round(len(scene_list) / vid_length, 2)} cuts per second']
     
     # things to write in output.txt
     # print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
-    print_dir = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, 'output.txt')
+    print_dir = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, os.path.basename(filename), 'output.txt')
     constants.text_formatter(os.path.basename(__file__), things_to_print, print_dir)
 
     # getting cuts (in seconds) from video
@@ -95,10 +97,29 @@ def main(argv):
 
     plt.ylabel("Number of cuts")
     plt.xlabel("Time interval of video (in seconds)")
-    plt.title("The number of cuts per time interval")
+    plt.title(f"The number of cuts per time interval for {os.path.basename(filename)[:-4]}")
 
     # fig.savefig(os.path.abspath(os.path.join(path, os.pardir)) + "/outputs/" + new_path + f"{os.path.basename(filename)}_/cut_frequency_plot")
-    fig.savefig(os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, f"{os.path.basename(filename)[:-4]}_cut_frequency_plot.jpg"))
+    fig.savefig(os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, os.path.basename(filename), f"cut_frequency_plot.jpg"))
+
+    # constants.csv_append([os.path.basename(filename)[:-4], round(vid_length, 2), len(scene_list), round(len(scene_list) / vid_length, 2)])
+    # global_var.init()
+    # global_var.csv_append([os.path.basename(filename)[:-4], round(vid_length, 2), len(scene_list), round(len(scene_list) / vid_length, 2)])
+    # csv_append([os.path.basename(filename)[:-4], round(vid_length, 2), len(scene_list), round(len(scene_list) / vid_length, 2)])
+
+    line = [os.path.basename(filename)[:-4], round(vid_length, 2), len(scene_list), round(len(scene_list) / vid_length, 2)]
+    txt_path = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir)), "outputs", new_path, "MASTER_OUTPUT.txt")
+    with open(txt_path, 'a') as f:
+        for i in range(len(line)):
+            f.write(str(line[i]) + ',./')
+            # if not i == len(line) - 1:
+            #     f.write(',')
+
+
+    # constants.CSV_LIST.append(os.path.basename(filename)[:-4])
+    # constants.CSV_LIST.append(round(vid_length, 2))
+    # constants.CSV_LIST.append(len(scene_list))
+    # constants.CSV_LIST.append(round(len(scene_list) / vid_length, 2))
 
 
 if __name__ == '__main__':

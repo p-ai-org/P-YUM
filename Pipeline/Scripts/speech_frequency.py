@@ -61,7 +61,7 @@ def vid_to_audio(filename):
 # output: a new folder called "chunked" contains 30 second clips of video
 def process_audio(file_name):
     myaudio = AudioSegment.from_file(file_name, "wav")
-    chunk_length_ms = 5000  # in milliseconds
+    chunk_length_ms = 10000  # in milliseconds
     chunks = make_chunks(myaudio, chunk_length_ms)  # Make chunks of one sec
     for i, chunk in enumerate(chunks):
         chunk_name = './chunked/' + file_name + "_{0}.wav".format(i)
@@ -149,7 +149,7 @@ def main(argv):
     length_of_vid = find_video_length(filename)
 
     # things to print in output.txt
-    things_to_print = [f'Around {num_of_words} words were detected in the video', f'The video had around {round(length_of_vid / num_of_words, 2)} words per second']
+    things_to_print = [f'Around {num_of_words} words were detected in the video', f'The video had around {round(num_of_words / length_of_vid, 2)} words per second']
     # print_dir = os.path.abspath(os.path.join(path, os.pardir)) + '/outputs/' + new_path + '/output.txt'
     print_dir = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), 'outputs', new_path, os.path.basename(filename), 'output.txt')
     constants.text_formatter(os.path.basename(
@@ -162,8 +162,8 @@ def main(argv):
     time_intervals = []
     words_cluster = []
     for i in range(len(list_of_chunks_words)):
-        time_intervals.append(f"{i * 5}-{i * 5 + 5}")
-        words_cluster.append(len(list_of_chunks_words[i]))
+        time_intervals.append(f"{i * 10}-{i * 10 + 10}")
+        words_cluster.append(len(list_of_chunks_words[i].split()))
 
     fig.set_figwidth(20)
     fig.set_figheight(7)

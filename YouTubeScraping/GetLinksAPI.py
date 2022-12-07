@@ -7,16 +7,6 @@ import scrapetube
 import pickle
 import pandas as pd
 import datetime
-# %%
-ragusea_vids = scrapetube.get_channel(channel_url="https://www.youtube.com/@aragusea")
-# %%
-vid_lim = 0
-rag_video_arr = []
-for video in ragusea_vids:
-    if vid_lim == 200:
-        break
-    rag_video_arr.append(video)
-    vid_lim += 1
 
 # %%
 def rel_date_to_dt(rel_date):
@@ -61,7 +51,7 @@ def channel_to_df(channel_in, identifier_string):
     return video_df
 
 # %%
-channel_url="https://www.youtube.com/@JoshuaWeissman"
-channel_to_df(channel_url, "AdamRaguseaVideos")
+channel_url="https://www.youtube.com/@gordonramsay"
+channel_to_df(channel_url, "GordonRamsayVideos")
 
 # %%

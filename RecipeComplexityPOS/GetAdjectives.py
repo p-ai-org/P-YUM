@@ -72,7 +72,3 @@ def gen_wordcloud(path_in):
     adj_list = get_adjectives(path_in)
     wordfreq = word_freq(adj_list)
     make_image(wordfreq)
-    
-# %%
-gen_wordcloud('lasagna_sample.txt')
-# %%

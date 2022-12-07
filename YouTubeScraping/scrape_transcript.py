@@ -12,6 +12,7 @@ import io
 import re
 import numpy as np
 import csv
+import pandas as pd
 
 
 # %% preprocess_reviews removes non-alphabetical characters, stop words, and lemmatizes dataset
@@ -41,7 +42,8 @@ def fetch_transcripts(video_id):
                 print(chunk)
                 full_trans += ' ' + chunk['text']
             return full_trans
-        except:
+        except Exception as e:
+            print(e)
             try:
             # if the transcript is not in english, autogenerate english captions from that language
                 transcript = transcript_list.find_transcript([
@@ -54,138 +56,23 @@ def fetch_transcripts(video_id):
                 for text in translated_transcript:
                     full_trans += ' ' + text['text']
                 return full_trans
-            except:
+            except Exception as e:
+                print(e)
                 translated_transcript = ''
                 return translated_transcript
-    except:
+    except Exception as e:
+        print(e)
         return ''
 
 # %%
-fetch_transcripts('ahxKAlbp6DU')
+rag_df = pd.read_csv("GordonRamsayVideos.csv")
+rag_df.head()
+# %%
+rag_df['transcript'] = rag_df['Video ID'].apply(fetch_transcripts)
 
-# %% gathers the transcript when given a youtube video id
-def get_transcripts(video_id, date_pub, names_in, country_in, category_in):
-    try:
-        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
-        trans_all = []
-        trans_str = ''
-        try:
-            transcript = transcript_list.find_transcript(['en', 'en-US'])
-            text = transcript.fetch()
-            for t in text:
-                clean = preprocess_text(t.get('text'))
-                trans_all.append(clean)
-            for i in trans_all:
-                for x in i:
-                    trans_str += x + ' '
-        except:
-            try:
-				# if the transcript is not in english, autogenerate english captions from that language
-                transcript = transcript_list.find_transcript([
-                    'de', 'zh_Hans', 'fr', 'zh-Hant', 'es',
-                    'ar', 'hi', 'it', 'ru', 'vi', 'th', 'sv',
-                    'fa', 'pt', 'cs', 'na', 'nl', 'el', 'fil', 'zh-TW'
-                ])
-                translated_transcript = transcript.translate('en')
-                text = translated_transcript.fetch()
-                for t in text:
-                    clean = preprocess_text(t.get('text'))
-                    trans_all.append(clean)
-                for i in trans_all:
-                    for x in i:
-                        trans_str += x + ' '
-            except:
-				# if the video happens to be in a language that was not noted return an empty string
-                trans_str = ''
-        with open('/home/txaa2019/free_gourds/Youtube Grab/text_files/' + country_in + '/' + category_in + '-text.csv', 'a') as csvfile:
-            csvwriter = csv.writer(csvfile)
-            csvwriter.writerow([date_pub, names_in, trans_str])
-            print('done writing')
-    except Exception as e: 
-        print(e)
-        with open('/home/txaa2019/free_gourds/Youtube Grab/text_files/' + country_in + '/' + category_in + '-text.csv', 'a') as csvfile:
-            csvwriter = csv.writer(csvfile)
-			# we cannot easily get the transcript of age restricted videos so we mark that with an asterisk
-            csvwriter.writerow([date_pub, names_in, '*'])
-            print('done writing')
- 
-# %% writes the period published, name, and transcript of a given video to the csv file
-def write_transcripts(category_num, country_in):
-    file = open('/home/txaa2019/free_gourds/Youtube Grab/Categories/' + country_in + '/' + category_num + '.csv')
-    csv_f = csv.reader(file)
-    links_in = []
-    dates_in = []
-    names_in = []
-    for column in csv_f:
-        links_in.append(column[1][32:])
-        dates_in.append(column[0])
-        names_in.append(column[2])
-    for links, dates, names in zip(links_in, dates_in, names_in):
-        get_transcripts(links, dates, names, country_in, category_num)
 
-# %% gathers the transcript when given a youtube video id but does so for videos that are not filtered by id
-def get_transcripts_all(video_id, date_pub, names_in, country_in):
-    try:
-        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
-        trans_all = []
-        trans_str = ''
-        try:
-            transcript = transcript_list.find_transcript(['en', 'en-US'])
-            text = transcript.fetch()
-            for t in text:
-                clean = preprocess_text(t.get('text'))
-                trans_all.append(clean)
-            for i in trans_all:
-                for x in i:
-                    trans_str += x + ' '
-        except:
-            try: 
-                transcript = transcript_list.find_transcript([
-                    'de', 'zh_Hans', 'fr', 'zh-Hant', 'es',
-                    'ar', 'hi', 'it', 'ru', 'vi', 'th', 'sv',
-                    'fa', 'pt', 'cs', 'na', 'nl', 'el', 'fil', 'zh-TW'
-                ])
-                translated_transcript = transcript.translate('en')
-                text = translated_transcript.fetch()
-                for t in text:
-                    clean = preprocess_text(t.get('text'))
-                    trans_all.append(clean)
-                for i in trans_all:
-                    for x in i:
-                        trans_str += x + ' '
-            except:
-                trans_str = ''
-#         with open('/home/txaa2019/free_gourds/Youtube Grab/text_files/All/' + country_in + '_all_text.csv', 'a') as csvfile:
-        with open('/home/txaa2019/free_gourds/Youtube Grab/text_files/All/global_all_text.csv', 'a') as csvfile:
-            csvwriter = csv.writer(csvfile)
-            csvwriter.writerow([date_pub, names_in, trans_str])
-            print('done writing')
-    except Exception as e: 
-        print(e)
-        with open('/home/txaa2019/free_gourds/Youtube Grab/text_files/All/' + country_in + '_all_text.csv', 'a') as csvfile:
-#         with open('/home/txaa2019/free_gourds/Youtube Grab/text_files/All/global_all_text.csv', 'a') as csvfile:
-            csvwriter = csv.writer(csvfile)
-            csvwriter.writerow([date_pub, names_in, '*'])
-            print('done writing')
-	
-# %% writes the transcript to a csv file
-def write_transcripts_all(country_in):
-    file = open('/home/txaa2019/free_gourds/Youtube Grab/Categories/All/' + country_in + '_nocat.csv')
-#     file = open('/home/txaa2019/free_gourds/Youtube Grab/Categories/All/global.csv')
-    csv_f = csv.reader(file)
-    links_in = []
-    dates_in = []
-    names_in = []
-    for column in csv_f:
-        links_in.append(column[1][32:])
-        dates_in.append(column[0])
-        names_in.append(column[2])
-    for links, dates, names in zip(links_in, dates_in, names_in):
-        get_transcripts_all(links, dates, names, country_in)
-	
-# loop through the categories and countries and write the transcripts to a csv file
-arr_category_num = ['10', '19', '22', '24', '25', '26', '27', '28']
-arr_country_name = ['Australia', 'Canada', 'India', 'United Kingdom', 'United States']
-for country in arr_country_name:
-    for category in arr_category_num:
-        write_transcripts(category, country)
+# %%
+rag_df.head()
+rag_df.to_csv("GordonRamsayVideos.csv")
+
+# %%

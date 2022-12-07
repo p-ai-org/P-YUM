@@ -39,9 +39,15 @@ def time_text_to_sec(text_in):
 # %%
 def time_text_to_min(text_in):
     time_ints = [int(i) for i in text_in.split() if i.isdigit()]
-    return time_ints[0] + time_ints[-1] / 60
+    if len(time_ints) == 3:
+        return time_ints[0] * 60 + time_ints[1] + time_ints[-1] / 60
+    if len(time_ints) == 2:
+        return time_ints[0] + time_ints[-1] / 60
+    else:
+        return time_ints[-1] / 60
 # %%
 def return_timing_info(df_in, outname='', save = False):
+    df_in = df_in[df_in['length'].apply(lambda x: isinstance(x,str))]
     df_in["length (m)"] = df_in["length"].apply(time_text_to_min)
     ax = df_in.hist(column='length (m)', bins=25, grid=False, figsize=(12,8), color='#86bf91', zorder=2, rwidth=0.9)
     ax = ax[0]
@@ -56,19 +62,18 @@ def return_timing_info(df_in, outname='', save = False):
         x.tick_params(axis="both", which="both", bottom="off", top="off", labelbottom="on", left="off", right="off", labelleft="on")
         # Draw horizontal axis lines
         vals = x.get_yticks()
-        for tick in vals:
-            x.axhline(y=tick, linestyle='dashed', alpha=0.4, color='#eeeeee', zorder=1)
         # Remove title
         x.set_title("")
         # Set x-axis label
         x.set_xlabel("Video length (Minutes)", labelpad=20, weight='bold', size=12)
         # Set y-axis label
         x.set_ylabel("Frequency", labelpad=20, weight='bold', size=12)
+        plt.xlim(0, 60)
     if save:
-        plt.savefig(outname + '.png')
+        plt.savefig(outname + '_time_info' + '.png')
     plt.show()
         
-    return df_in["length (m)"], df_in["length (m)"].mode()[0]
+    return df_in["length (m)"], {"mean": df_in["length (m)"].mode()[0], "mode": df_in["length (m)"].mean()}
 # %%
 def fetch_transcript_list(df_in):
     return list(df_in['transcript'])
@@ -79,7 +84,8 @@ def fetch_wpm(df_in, outname = '', save= False):
     df_in["num_words"] = df_in['transcript'].str.split().apply(len)
     print(df_in.head())
     df_in["wpm"] = df_in["num_words"] / df_in["length (m)"]
-    ax = df_in.hist(column='wpm', bins=25, grid=False, figsize=(12,8), color='#86bf91', zorder=2, rwidth=0.9)
+    df_in = df_in[df_in['wpm'] < 800]
+    ax = df_in.hist(column='wpm', bins=25, grid=False, figsize=(12,8), color='r', zorder=2, rwidth=0.9)
     ax = ax[0]
     
     for x in ax:
@@ -92,17 +98,20 @@ def fetch_wpm(df_in, outname = '', save= False):
         x.tick_params(axis="both", which="both", bottom="off", top="off", labelbottom="on", left="off", right="off", labelleft="on")
         # Draw horizontal axis lines
         vals = x.get_yticks()
-        for tick in vals:
-            x.axhline(y=tick, linestyle='dashed', alpha=0.4, color='#eeeeee', zorder=1)
         # Remove title
         x.set_title("")
         # Set x-axis label
         x.set_xlabel("Words per minute", labelpad=20, weight='bold', size=12)
         # Set y-axis label
         x.set_ylabel("Frequency", labelpad=20, weight='bold', size=12)
+        plt.xlim(100, 350)
     if save:
-        plt.savefig(outname + '.png')
+        plt.savefig(outname + "_wpm_freq" + '.png')
     plt.show()
+    print(df_in["wpm"])
+    mode = df_in["wpm"].mode()[0]
+    mean = df_in["wpm"].mean()
+    return {"mode": mode, "mean": mean}
 
 # %%
 def fetch_sponsor_rag(string_in):
@@ -139,20 +148,21 @@ def sponsor_analysis(df_in, outname = '', save = False):
     fig, ax = plt.subplots()
     ax.pie([num_no_sponsor, num_sponsor], labels = labels)
     if save:
-        plt.savefig("sponsor_pie_" + outname + ".png")
+        plt.savefig(outname + "_sponsor_pie" + ".png")
     plt.show()
     
     frame['sponsors'].replace('', np.nan, inplace=True)
     frame.dropna(subset=['sponsors'], inplace=True)
     sponsor_freqs = frame['sponsors'].value_counts().head(20)
-    print(type(sponsor_freqs))
     sponsor_freqs.plot.bar()
+    plt.xlabel("Sponsors")
+    plt.ylabel("Frequency")
+    plt.show()
+    if save:
+        plt.savefig(outname + "_sponsor_bar" + ".png")
+    plt.show()
     
     return num_no_sponsor, sponsor_freqs
-
-
-# %%
-print(sponsor_analysis(ramsay_df))
 
 
 # %%
@@ -190,7 +200,7 @@ def bert_sentiment(df_in, transcript_bool = True):
 def graph_sentiments(df_in, outname = '', transcript_bool = True, save = False):
     if transcript_bool:
         df_in = bert_sentiment(df_in, transcript_bool = transcript_bool)
-        ax = df_in.hist(column='Transcript Sentiments', bins=25, grid=False, figsize=(12,8), color='#86bf91', zorder=2, rwidth=0.9)
+        ax = df_in.hist(column='Transcript Sentiments', bins=25, grid=False, figsize=(12,8), color='m', zorder=2, rwidth=0.9)
         ax = ax[0]
 
         for x in ax:
@@ -203,21 +213,20 @@ def graph_sentiments(df_in, outname = '', transcript_bool = True, save = False):
             x.tick_params(axis="both", which="both", bottom="off", top="off", labelbottom="on", left="off", right="off", labelleft="on")
             # Draw horizontal axis lines
             vals = x.get_yticks()
-            for tick in vals:
-                x.axhline(y=tick, linestyle='dashed', alpha=0.4, color='#eeeeee', zorder=1)
             # Remove title
             x.set_title("")
             # Set x-axis label
             x.set_xlabel("Video Transcript Sentiment Polarity", labelpad=20, weight='bold', size=12)
             # Set y-axis label
             x.set_ylabel("Frequency", labelpad=20, weight='bold', size=12)
+            plt.xlim(0, 1)
         if save:
-            plt.savefig("trans_sents_" + outname + '.png')
+            plt.savefig(outname + "_trans_sents" + '.png')
         plt.show()
     
     else:
         df_in = bert_sentiment(df_in, transcript_bool = transcript_bool)
-        ax = df_in.hist(column='Title Sentiments', bins=25, grid=False, figsize=(12,8), color='#86bf91', zorder=2, rwidth=0.9)
+        ax = df_in.hist(column='Title Sentiments', bins=25, grid=False, figsize=(12,8), color='c', zorder=2, rwidth=0.9)
         ax = ax[0]
 
         for x in ax:
@@ -229,34 +238,36 @@ def graph_sentiments(df_in, outname = '', transcript_bool = True, save = False):
             # Switch off ticks
             x.tick_params(axis="both", which="both", bottom="off", top="off", labelbottom="on", left="off", right="off", labelleft="on")
             # Draw horizontal axis lines
-            vals = x.get_yticks()
-            for tick in vals:
-                x.axhline(y=tick, linestyle='dashed', alpha=0.4, color='#eeeeee', zorder=1)
             # Remove title
             x.set_title("")
             # Set x-axis label
             x.set_xlabel("Video Title Sentiment Polarity", labelpad=20, weight='bold', size=12)
             # Set y-axis label
             x.set_ylabel("Frequency", labelpad=20, weight='bold', size=12)
+            plt.xlim(0, 1)
         if save:
-            plt.savefig("title_sents_" + outname + '.png')
+            plt.savefig(outname + "_title_sents" + '.png')
         plt.show()
 
 
 # %%
 def perform_analysis(df_in, outname, rag_df = False):
-    mean_time = return_timing_info(df_in, outname=outname, save = False)
-    fetch_wpm(df_in, outname=outname, save = True)
-    graph_sentiments(df_in, outname = outname, transcript_bool = True, save = False)
-    graph_sentiments(df_in, outname = outname, transcript_bool = False, save = False)
+    mean_time_column, time_meanmode = return_timing_info(df_in, outname=outname, save = True)
+    wpm_meanmode = fetch_wpm(df_in, outname=outname, save = True)
+    graph_sentiments(df_in, outname = outname, transcript_bool = True, save = True)
+    graph_sentiments(df_in, outname = outname, transcript_bool = False, save = True)
     if rag_df:
-        
+        sponsor_analysis(df_in, outname, save = True)
+    aa.gen_wordcloud(fetch_transcript_list(df_in), outname = outname, save = True)
+    return time_meanmode, wpm_meanmode
 
-    
 
 # %%
-ramsay_df = pd.read_csv(dir + "GordonRamsayVideos.csv")
-graph_sentiments(ramsay)
+# cd ..
+
 # %%
-aa.gen_wordcloud(text)
+df = pd.read_csv(dir + 'JoshuaWeissmanVideosCleaned.csv')
+analysis_portion = df.head(112)
+perform_analysis(df, outname = dir + 'JoshuaWeissman', rag_df = True)
+
 # %%

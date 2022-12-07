@@ -50,7 +50,7 @@ def word_freq(words):
 
 
 # %%
-def make_image(text):
+def make_image(text, outname='', save = False):
     wc = WordCloud(background_color="white", max_words=20)
     # generate word cloud
     wc.generate_from_frequencies(text)
@@ -58,10 +58,12 @@ def make_image(text):
     # show
     plt.imshow(wc, interpolation="bilinear")
     plt.axis("off")
+    if save:
+        plt.savefig(outname + 'wordfreq.png')
     plt.show()
 
 # %%
-def gen_wordcloud(text):
+def gen_wordcloud(text, outname = '', save = False):
     adj_list = get_adjectives(text)
     wordfreq = word_freq(adj_list)
-    make_image(wordfreq)
+    make_image(wordfreq, outname = outname, save = save)

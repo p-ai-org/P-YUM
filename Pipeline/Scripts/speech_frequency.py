@@ -61,7 +61,7 @@ def vid_to_audio(filename):
 # output: a new folder called "chunked" contains 30 second clips of video
 def process_audio(file_name):
     myaudio = AudioSegment.from_file(file_name, "wav")
-    chunk_length_ms = 5000  # in milliseconds
+    chunk_length_ms = 10000  # in milliseconds
     chunks = make_chunks(myaudio, chunk_length_ms)  # Make chunks of one sec
     for i, chunk in enumerate(chunks):
         chunk_name = './chunked/' + file_name + "_{0}.wav".format(i)
@@ -162,8 +162,8 @@ def main(argv):
     time_intervals = []
     words_cluster = []
     for i in range(len(list_of_chunks_words)):
-        time_intervals.append(f"{i * 5}-{i * 5 + 5}")
-        words_cluster.append(len(list_of_chunks_words[i]))
+        time_intervals.append(f"{i * 10}-{i * 10 + 10}")
+        words_cluster.append(len(list_of_chunks_words[i].split()))
 
     fig.set_figwidth(20)
     fig.set_figheight(7)

@@ -24,8 +24,6 @@ loadmodel = TFBertForSequenceClassification.from_pretrained("/home/CAMPUS/txaa20
 
 
 # %%
-
-
 def convert_data_to_examples(train, test, DATA_COLUMN, LABEL_COLUMN): 
     train_InputExamples = train.apply(lambda x: InputExample(guid=None, # Globally unique ID for bookkeeping, unused in this case
                                                           text_a = x[DATA_COLUMN], 
@@ -41,8 +39,6 @@ def convert_data_to_examples(train, test, DATA_COLUMN, LABEL_COLUMN):
 
 
 # %%
-
-
 def convert_examples_to_tf_dataset(examples, tokenizer, max_length=128):
     features = [] # -> will hold InputFeatures to be converted later
 
@@ -93,8 +89,6 @@ def convert_examples_to_tf_dataset(examples, tokenizer, max_length=128):
 
 
 # %%
-
-
 def make_pred(list_preds):
     tf_batch = tokenizer(list_preds, max_length=128, padding=True, truncation=True, return_tensors='tf')
     tf_outputs = loadmodel(tf_batch)

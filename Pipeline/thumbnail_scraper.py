@@ -7,6 +7,8 @@ if not os.path.exists("Thumbnail Photos"):
     os.makedirs("Thumbnail Photos")
 
 # list of youtube video links
+# the videos are adam ragusea's detroit style pizza
+# and Joshua Weissman Shawarma meal
 links = ["https://www.youtube.com/watch?v=ahxKAlbp6DU",
          "https://www.youtube.com/watch?v=uYIDfBbgVVI"]
 

@@ -65,7 +65,7 @@ def fetch_transcripts(video_id):
         return ''
 
 # %%
-rag_df = pd.read_csv("GordonRamsayVideos.csv")
+rag_df = pd.read_csv("AdamRaguseaVideos.csv")
 rag_df.head()
 # %%
 rag_df['transcript'] = rag_df['Video ID'].apply(fetch_transcripts)
@@ -73,6 +73,6 @@ rag_df['transcript'] = rag_df['Video ID'].apply(fetch_transcripts)
 
 # %%
 rag_df.head()
-rag_df.to_csv("GordonRamsayVideos.csv")
+rag_df.to_csv("AdamRaguseaVideos.csv")
 
 # %%

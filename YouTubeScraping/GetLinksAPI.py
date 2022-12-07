@@ -17,6 +17,8 @@ def rel_date_to_dt(rel_date):
     past_time = datetime.datetime.now() - dt
     
     return past_time
+
+print(rel_date_to_dt("34 days"))
 # %%
 def raw_vid_to_dict(sample_vid):
     videoid = (sample_vid['videoId'])
@@ -24,10 +26,9 @@ def raw_vid_to_dict(sample_vid):
     title = sample_vid['title']['runs'][0]['text']
     length = sample_vid['lengthText']['accessibility']['accessibilityData']['label']
     upload_date = sample_vid['publishedTimeText']['simpleText']
-    dt = rel_date_to_dt(upload_date)
     description_snip = sample_vid['descriptionSnippet']['runs'][0]['text']
     vid_dict = {'Video Name': title, 'Thumbnail URL': thumbnail_url, 'Video ID': videoid,
-        'length' : length, 'description snippet': description_snip, 'date published': dt}
+        'length' : length, 'description snippet': description_snip, 'date published': upload_date}
     return vid_dict
 
 # %%
@@ -51,7 +52,7 @@ def channel_to_df(channel_in, identifier_string):
     return video_df
 
 # %%
-channel_url="https://www.youtube.com/@gordonramsay"
-channel_to_df(channel_url, "GordonRamsayVideos")
+channel_url="https://www.youtube.com/@aragusea"
+channel_to_df(channel_url, "AdamRaguseaVideos")
 
 # %%

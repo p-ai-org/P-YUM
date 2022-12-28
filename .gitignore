@@ -37,6 +37,7 @@ aclImdb/
 *.manifest
 *.spec
 *.txt
+*.crf
 
 # Installer logs
 pip-log.txt

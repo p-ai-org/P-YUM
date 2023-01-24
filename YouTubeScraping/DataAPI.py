@@ -64,7 +64,7 @@ def search_extract_description(video_id):
 # Given a df with video IDs, do the API search & extract description + published date
 def update_df(df):
     df['response'] = df['Video ID'].apply(search_by_video_id)
-    df['description snippet'] = df['response'].apply(extract_description_from_response)
+    df['description'] = df['response'].apply(extract_description_from_response)
     df['date published'] = df['response'].apply(extract_published_date_from_response)
     df = df.drop(columns='response')
     df.drop(columns=df.columns[0], axis=1, inplace=True)
